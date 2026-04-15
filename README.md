@@ -49,7 +49,6 @@
       border-left: 1px solid rgba(255,255,255,0.08);
       border-right: 1px solid rgba(255,255,255,0.08);
       --safe-top: max(10px, env(safe-area-inset-top));
-      --safe-bottom: max(10px, env(safe-area-inset-bottom));
     }
 
     canvas {
@@ -62,19 +61,19 @@
 
     .topUi {
       position: absolute;
-      left: 10px;
-      right: 10px;
-      top: calc(var(--safe-top) + 6px);
+      left: 8px;
+      right: 8px;
+      top: calc(var(--safe-top) + 4px);
       z-index: 5;
       display: grid;
-      gap: 8px;
+      gap: 6px;
       pointer-events: none;
     }
 
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 16px;
+      border-radius: 14px;
       box-shadow: var(--shadow);
       backdrop-filter: blur(8px);
     }
@@ -82,9 +81,9 @@
     .stats {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 6px;
-      padding: 10px;
-      min-height: 58px;
+      gap: 2px;
+      padding: 6px 8px;
+      min-height: 42px;
     }
 
     .stat {
@@ -95,29 +94,29 @@
     }
 
     .label {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--sub);
-      line-height: 1.1;
+      line-height: 1.05;
       white-space: nowrap;
     }
 
     .value {
-      font-size: 18px;
+      font-size: 14px;
       font-weight: 800;
-      line-height: 1.2;
+      line-height: 1.15;
       white-space: nowrap;
     }
 
     .questionBox {
-      padding: 10px 12px;
-      min-height: 82px;
+      padding: 8px 10px;
+      min-height: 70px;
     }
 
     .questionTop {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
     }
 
     .questionMain {
@@ -126,31 +125,31 @@
     }
 
     .questionLabel {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--sub);
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .question {
-      font-size: clamp(20px, 5.2vw, 30px);
+      font-size: clamp(18px, 5vw, 26px);
       font-weight: 900;
-      line-height: 1.12;
-      margin-bottom: 4px;
+      line-height: 1.08;
+      margin-bottom: 2px;
       word-break: break-word;
     }
 
     .hint {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--sub);
-      line-height: 1.35;
+      line-height: 1.25;
     }
 
     .modeTag {
       display: inline-flex;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       color: #fff;
-      padding: 5px 8px;
+      padding: 4px 7px;
       border-radius: 999px;
       background: rgba(255,255,255,0.12);
       border: 1px solid rgba(255,255,255,0.12);
@@ -160,7 +159,7 @@
 
     .controlsRow {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
       gap: 8px;
       pointer-events: none;
@@ -170,65 +169,33 @@
       display: flex;
       gap: 8px;
       align-items: center;
-      flex-wrap: wrap;
       pointer-events: auto;
     }
 
-    .audioPanel {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 10px;
-      flex-wrap: wrap;
-    }
-
-    button, input[type="range"] {
+    button {
       border: 0;
       color: var(--text);
       background: rgba(255,255,255,0.08);
       border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 10px 12px;
+      padding: 8px 12px;
       font-weight: 700;
-      min-height: 44px;
+      min-height: 38px;
       box-shadow: var(--shadow);
-      font-size: 13px;
+      font-size: 12px;
+      cursor: pointer;
     }
 
-    button { cursor: pointer; }
     button:active { transform: translateY(1px) scale(.99); }
-
-    input[type="range"] {
-      width: 88px;
-      padding: 0;
-      min-height: auto;
-      height: 8px;
-      background: transparent;
-      box-shadow: none;
-      border: 0;
-    }
-
-    .rangeWrap {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .rangeLabel {
-      font-size: 11px;
-      color: var(--sub);
-      font-weight: 700;
-      white-space: nowrap;
-    }
 
     .toast {
       position: absolute;
       left: 50%;
-      top: 230px;
+      top: 180px;
       transform: translateX(-50%);
       z-index: 7;
       min-width: 120px;
-      padding: 10px 14px;
+      padding: 8px 12px;
       border-radius: 999px;
       font-weight: 800;
       text-align: center;
@@ -239,6 +206,7 @@
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
       max-width: calc(100vw - 40px);
+      font-size: 12px;
     }
 
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -249,10 +217,10 @@
     .bossBanner {
       position: absolute;
       left: 50%;
-      top: 276px;
+      top: 218px;
       transform: translateX(-50%);
       z-index: 7;
-      padding: 10px 18px;
+      padding: 8px 14px;
       border-radius: 999px;
       background: rgba(255, 217, 105, 0.12);
       color: var(--warn);
@@ -264,6 +232,7 @@
       transition: opacity .18s ease;
       max-width: calc(100vw - 40px);
       white-space: nowrap;
+      font-size: 12px;
     }
 
     .bossBanner.show { opacity: 1; }
@@ -363,16 +332,8 @@
     .hidden { display: none; }
 
     @media (max-width: 480px) {
-      .value { font-size: 16px; }
+      .question { font-size: clamp(17px, 5.2vw, 24px); }
       .modeChooser { grid-template-columns: 1fr; }
-      .question { font-size: clamp(19px, 5.6vw, 28px); }
-    }
-
-    @media (max-width: 380px) {
-      .label, .questionLabel, .hint, .rangeLabel { font-size: 10px; }
-      .value { font-size: 15px; }
-      button { font-size: 12px; padding: 10px 11px; }
-      input[type="range"] { width: 72px; }
     }
   </style>
 </head>
@@ -401,15 +362,6 @@
 
       <div class="controlsRow">
         <div class="controls">
-          <div class="panel audioPanel">
-            <button id="soundBtn" aria-label="音切替">音ON</button>
-            <div class="rangeWrap">
-              <span class="rangeLabel">音量</span>
-              <input id="volumeSlider" type="range" min="0" max="100" value="70" />
-            </div>
-          </div>
-        </div>
-        <div class="controls" style="justify-content:flex-end;">
           <button id="pauseBtn" aria-label="一時停止">一時停止</button>
         </div>
       </div>
@@ -438,9 +390,9 @@
 
         <button class="big" id="startBtn">ゲーム開始</button>
         <div class="miniRow">
-          <div class="badge">計算式を常に表示</div>
+          <div class="badge">プレイ画面を拡大</div>
+          <div class="badge">落下をゆっくり化</div>
           <div class="badge">重なりにくい配置</div>
-          <div class="badge">8bit風BGM</div>
         </div>
       </div>
     </div>
@@ -483,14 +435,12 @@
     const startBtn = document.getElementById('startBtn');
     const restartBtn = document.getElementById('restartBtn');
     const pauseBtn = document.getElementById('pauseBtn');
-    const soundBtn = document.getElementById('soundBtn');
-    const volumeSlider = document.getElementById('volumeSlider');
     const modeCards = [...document.querySelectorAll('.modeCard')];
 
     let dpr = Math.max(1, window.devicePixelRatio || 1);
     let width = 0;
     let height = 0;
-    let playableTop = 220;
+    let playableTop = 190;
     let playableBottom = 560;
     let laneCenters = [];
 
@@ -501,8 +451,6 @@
     let lives = 3;
     let bestScore = Number(localStorage.getItem('fruitMathBestDeluxe') || 0);
     let timeLeft = 60;
-    let soundOn = true;
-    let volumeLevel = Number(localStorage.getItem('fruitMathVolume') || 70) / 100;
 
     let items = [];
     let particles = [];
@@ -516,14 +464,14 @@
     let shakeTime = 0;
 
     const config = {
-      baseSpawnInterval: 0.74,
-      minSpawnInterval: 0.30,
-      baseSpeed: 156,
-      speedGainPerSec: 5.4,
-      comboSpeedGain: 4.2,
+      baseSpawnInterval: 1.05,
+      minSpawnInterval: 0.48,
+      baseSpeed: 55,
+      speedGainPerSec: 1.2,
+      comboSpeedGain: 0.8,
       fruitSizeMin: 54,
       fruitSizeMax: 84,
-      maxVisible: 14,
+      maxVisible: 12,
       laneCount: 4,
       horizontalPadding: 10,
       overlapPadding: 10,
@@ -566,20 +514,17 @@
       const topUiRect = topUiEl.getBoundingClientRect();
       const wrapRect = wrap.getBoundingClientRect();
       const uiBottom = topUiRect.bottom - wrapRect.top;
-      playableTop = Math.max(165, Math.ceil(uiBottom + 14));
-      playableBottom = height - Math.max(12, Math.floor((window.visualViewport ? (height - window.visualViewport.height) : 0))) - 8;
-      if (playableBottom < playableTop + 140) playableBottom = playableTop + 140;
-
-      toastEl.style.top = `${playableTop - 18}px`;
-      bossBannerEl.style.top = `${playableTop + 26}px`;
+      playableTop = Math.max(140, Math.ceil(uiBottom + 10));
+      playableBottom = height - 8;
+      if (playableBottom < playableTop + 180) playableBottom = playableTop + 180;
+      toastEl.style.top = `${playableTop - 14}px`;
+      bossBannerEl.style.top = `${playableTop + 20}px`;
 
       const laneCount = width < 360 ? 3 : config.laneCount;
       const usableWidth = width - config.horizontalPadding * 2;
       const laneWidth = usableWidth / laneCount;
       laneCenters = [];
-      for (let i = 0; i < laneCount; i++) {
-        laneCenters.push(config.horizontalPadding + laneWidth * (i + 0.5));
-      }
+      for (let i = 0; i < laneCount; i++) laneCenters.push(config.horizontalPadding + laneWidth * (i + 0.5));
     }
 
     function rand(min, max) { return Math.random() * (max - min) + min; }
@@ -610,15 +555,7 @@
       showBossBanner._timer = setTimeout(() => bossBannerEl.classList.remove('show'), 1200);
     }
 
-    function applyVolumeSettings() {
-      if (!masterGain || !bgmGain || !sfxGain) return;
-      masterGain.gain.value = soundOn ? Math.max(0, Math.min(1, volumeLevel)) : 0;
-      bgmGain.gain.value = 0.06;
-      sfxGain.gain.value = 0.95;
-    }
-
     function ensureAudio() {
-      if (!soundOn) return null;
       if (!audioCtx) {
         const AC = window.AudioContext || window.webkitAudioContext;
         if (!AC) return null;
@@ -626,7 +563,9 @@
         masterGain = audioCtx.createGain();
         bgmGain = audioCtx.createGain();
         sfxGain = audioCtx.createGain();
-        applyVolumeSettings();
+        masterGain.gain.value = 0.7;
+        bgmGain.gain.value = 0.06;
+        sfxGain.gain.value = 0.95;
         bgmGain.connect(masterGain);
         sfxGain.connect(masterGain);
         masterGain.connect(audioCtx.destination);
@@ -646,7 +585,7 @@
 
     function scheduleBgmLoop(modeName = 'normal') {
       const ac = ensureAudio();
-      if (!ac || !soundOn || !bgmGain) return;
+      if (!ac || !bgmGain) return;
       stopBgm();
       bgmStarted = true;
       bgmMode = modeName;
@@ -656,16 +595,9 @@
       const bar = beat * 4;
       const totalBars = 8;
       const loopLength = bar * totalBars;
-
-      const bassLine = modeName === 'boss'
-        ? [98, 98, 123.47, 123.47, 164.81, 164.81, 146.83, 146.83]
-        : [110, 110, 146.83, 146.83, 164.81, 164.81, 130.81, 130.81];
-      const chordRoots = modeName === 'boss'
-        ? [196, 196, 246.94, 246.94, 329.63, 329.63, 293.66, 293.66]
-        : [220, 220, 293.66, 293.66, 329.63, 329.63, 261.63, 261.63];
-      const leadPattern = modeName === 'boss'
-        ? [783.99, 880.0, 987.77, 880.0, 783.99, 1046.5, 987.77, 880.0]
-        : [659.25, 587.33, 523.25, 587.33, 659.25, 783.99, 698.46, 587.33];
+      const bassLine = modeName === 'boss' ? [98, 98, 123.47, 123.47, 164.81, 164.81, 146.83, 146.83] : [110, 110, 146.83, 146.83, 164.81, 164.81, 130.81, 130.81];
+      const chordRoots = modeName === 'boss' ? [196, 196, 246.94, 246.94, 329.63, 329.63, 293.66, 293.66] : [220, 220, 293.66, 293.66, 329.63, 329.63, 261.63, 261.63];
+      const leadPattern = modeName === 'boss' ? [783.99, 880.0, 987.77, 880.0, 783.99, 1046.5, 987.77, 880.0] : [659.25, 587.33, 523.25, 587.33, 659.25, 783.99, 698.46, 587.33];
 
       function addTone(freq, start, dur, type, gainValue, targetGain = bgmGain, slideTo = null, detune = 0) {
         const osc = ac.createOscillator();
@@ -677,11 +609,7 @@
         g.gain.setValueAtTime(0.0001, start);
         g.gain.exponentialRampToValueAtTime(gainValue, start + 0.01);
         g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-        osc.connect(g);
-        g.connect(targetGain);
-        osc.start(start);
-        osc.stop(start + dur + 0.03);
-        bgmNodes.push(osc);
+        osc.connect(g); g.connect(targetGain); osc.start(start); osc.stop(start + dur + 0.03); bgmNodes.push(osc);
       }
 
       for (let barIndex = 0; barIndex < totalBars; barIndex++) {
@@ -702,21 +630,18 @@
         addTone(leadFreq * 1.335, barStart + beat * 2.0, beat * 0.28, 'square', modeName === 'boss' ? 0.025 : 0.018);
         addTone(leadFreq * 1.5, barStart + beat * 2.5, beat * 0.22, 'square', modeName === 'boss' ? 0.020 : 0.014);
         addTone(leadFreq * 1.335, barStart + beat * 3.0, beat * 0.48, 'square', modeName === 'boss' ? 0.022 : 0.016, bgmGain, leadFreq * 1.0);
-        for (let s = 0; s < 8; s++) {
-          const t = barStart + beat * 0.5 * s;
-          addTone(modeName === 'boss' ? 1320 : 1046.5, t, 0.026, 'square', modeName === 'boss' ? 0.006 : 0.004);
-        }
+        for (let s = 0; s < 8; s++) addTone(modeName === 'boss' ? 1320 : 1046.5, barStart + beat * 0.5 * s, 0.026, 'square', modeName === 'boss' ? 0.006 : 0.004);
       }
 
       bgmTimer = setTimeout(() => {
         if (scheduleToken !== bgmScheduleToken) return;
-        if (soundOn && (gameState === 'running' || gameState === 'paused')) scheduleBgmLoop(bgmMode);
+        if (gameState === 'running' || gameState === 'paused') scheduleBgmLoop(bgmMode);
       }, Math.max(100, (loopLength - 0.12) * 1000));
     }
 
     function startBgmIfNeeded(forceMode = null) {
       const ac = ensureAudio();
-      if (!ac || !soundOn) return;
+      if (!ac) return;
       const desiredMode = forceMode || (currentQuestion && currentQuestion.boss ? 'boss' : 'normal');
       if (!bgmStarted || bgmMode !== desiredMode) scheduleBgmLoop(desiredMode);
     }
@@ -733,10 +658,7 @@
       g.gain.setValueAtTime(0.0001, now);
       g.gain.exponentialRampToValueAtTime(gain, now + 0.01);
       g.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-      osc.connect(g);
-      g.connect(sfxGain);
-      osc.start(now);
-      osc.stop(now + duration + 0.02);
+      osc.connect(g); g.connect(sfxGain); osc.start(now); osc.stop(now + duration + 0.02);
     }
 
     const soundCorrect = () => { beep(560, 0.08, 'triangle', 0.035, 760); setTimeout(() => beep(840, 0.09, 'triangle', 0.03, 980), 45); };
@@ -770,7 +692,7 @@
       questionTextEl.textContent = text;
       hintTextEl.textContent = boss ? 'ボス問題。式が重いぶん高得点。' : '見た目では正解は分からない。計算して見抜こう。';
       if (boss) { showBossBanner(); showToast('ボス問題！', 'warn', 700); soundBoss(); startBgmIfNeeded('boss'); }
-      else { startBgmIfNeeded('normal'); }
+      else startBgmIfNeeded('normal');
     }
 
     function randomWrongAnswer(correct) {
@@ -793,7 +715,7 @@
         const j = Math.floor(Math.random() * (i + 1));
         [lanePool[i], lanePool[j]] = [lanePool[j], lanePool[i]];
       }
-      const upperSpawnBase = playableTop - radius - rand(30, 90);
+      const upperSpawnBase = playableTop - radius - rand(20, 60);
       for (const laneX of lanePool) {
         for (let t = 0; t < config.spawnTries; t++) {
           const x = clamp(laneX + rand(-12, 12), config.horizontalPadding + radius, width - config.horizontalPadding - radius);
@@ -809,19 +731,19 @@
           if (!blocked) return { x, y };
         }
       }
-      return { x: clamp(pick(laneCenters) + rand(-14, 14), config.horizontalPadding + radius, width - config.horizontalPadding - radius), y: playableTop - radius - rand(50, 120) };
+      return { x: clamp(pick(laneCenters) + rand(-14, 14), config.horizontalPadding + radius, width - config.horizontalPadding - radius), y: playableTop - radius - rand(50, 100) };
     }
 
     function createItem(value, isCorrect = false, options = {}) {
-      const size = rand(config.fruitSizeMin, config.fruitSizeMax) * (options.big ? 1.22 : 1);
+      const size = rand(config.fruitSizeMin, config.fruitSizeMax) * (options.big ? 1.18 : 1);
       const radius = size / 2;
       const spawn = findSpawnPosition(radius);
       const comboBoost = combo * config.comboSpeedGain;
-      const speed = config.baseSpeed + difficultyTime * config.speedGainPerSec + comboBoost + rand(-14, 62);
-      const drift = rand(-10, 10);
+      const speed = config.baseSpeed + difficultyTime * config.speedGainPerSec + comboBoost + rand(-8, 24);
+      const drift = rand(-7, 7);
       items.push({
         x: spawn.x, y: spawn.y, r: radius, size, value, isCorrect, speed, drift,
-        rotation: rand(-0.16, 0.16), spin: rand(-0.38, 0.38), pulse: rand(0, Math.PI * 2),
+        rotation: rand(-0.14, 0.14), spin: rand(-0.25, 0.25), pulse: rand(0, Math.PI * 2),
         shapeSeed: rand(0.88, 1.14), theme: createFruitTheme(), alive: true, big: !!options.big,
       });
     }
@@ -839,8 +761,8 @@
               const push = (minDist - dist) * 0.5;
               const nx = dx / dist, ny = dy / dist;
               a.x -= nx * push; b.x += nx * push;
-              if (a.y < playableTop + 120) a.y -= ny * push * 0.25;
-              if (b.y < playableTop + 120) b.y += ny * push * 0.25;
+              if (a.y < playableTop + 120) a.y -= ny * push * 0.2;
+              if (b.y < playableTop + 120) b.y += ny * push * 0.2;
               a.x = clamp(a.x, a.r, width - a.r);
               b.x = clamp(b.x, b.r, width - b.r);
             }
@@ -860,7 +782,7 @@
     function spawnWave() {
       if (!currentQuestion) generateQuestion();
       const visibleCorrect = items.some(i => i.isCorrect && i.alive);
-      const baseCount = bossActive ? randInt(1, 3) : randInt(1, 2 + Math.floor(difficultyTime / 22));
+      const baseCount = bossActive ? randInt(1, 2) : randInt(1, 2 + Math.floor(difficultyTime / 28));
       if (!visibleCorrect) createItem(currentQuestion.answer, true, { big: bossActive });
       for (let i = 0; i < baseCount; i++) createItem(randomWrongAnswer(currentQuestion.answer), false);
       ensureOnlyOneCorrect(currentQuestion.answer);
@@ -869,13 +791,13 @@
     }
 
     function burst(x, y, good, count = 14) {
-      for (let i = 0; i < count; i++) particles.push({ x, y, vx: rand(-140, 140), vy: rand(-170, 70), life: rand(0.28, 0.64), t: 0, size: rand(3, 7), good });
+      for (let i = 0; i < count; i++) particles.push({ x, y, vx: rand(-120, 120), vy: rand(-150, 60), life: rand(0.28, 0.64), t: 0, size: rand(3, 7), good });
     }
 
     function createSlicePieces(item) {
       const left = { ...item }, right = { ...item };
-      slices.push({ ...left, half: 'left', vx: -90 - rand(0, 60), vy: -120 - rand(0, 60), vr: -2.8, life: 0.7, t: 0 });
-      slices.push({ ...right, half: 'right', vx: 90 + rand(0, 60), vy: -120 - rand(0, 60), vr: 2.8, life: 0.7, t: 0 });
+      slices.push({ ...left, half: 'left', vx: -80 - rand(0, 40), vy: -100 - rand(0, 40), vr: -2.2, life: 0.7, t: 0 });
+      slices.push({ ...right, half: 'right', vx: 80 + rand(0, 40), vy: -100 - rand(0, 40), vr: 2.2, life: 0.7, t: 0 });
     }
 
     function maybeTriggerBoss() {
@@ -893,9 +815,9 @@
       const bossBonus = currentQuestion.boss ? 18 : 0;
       score += 10 + Math.min(combo, 20) + bossBonus;
       combo += 1;
-      shakeTime = 0.12;
+      shakeTime = 0.10;
       createSlicePieces(item);
-      burst(item.x, item.y, true, currentQuestion.boss ? 26 : 16);
+      burst(item.x, item.y, true, currentQuestion.boss ? 24 : 14);
       showToast(currentQuestion.boss ? 'ボス撃破！' : '正解！', 'good', 520);
       soundCorrect();
       soundSlice();
@@ -911,8 +833,8 @@
       item.alive = false;
       combo = 0;
       lives -= 1;
-      shakeTime = 0.18;
-      burst(item.x, item.y, false, 12);
+      shakeTime = 0.14;
+      burst(item.x, item.y, false, 10);
       showToast('ミス！', 'bad');
       soundWrong();
       updateHud();
@@ -941,7 +863,7 @@
       generateQuestion(false);
       startBgmIfNeeded('normal');
       createItem(currentQuestion.answer, true);
-      for (let i = 0; i < 4; i++) createItem(randomWrongAnswer(currentQuestion.answer), false);
+      for (let i = 0; i < 3; i++) createItem(randomWrongAnswer(currentQuestion.answer), false);
       separateOverlaps();
       updateHud();
       gameOverOverlay.classList.add('hidden');
@@ -961,7 +883,7 @@
         timeLeft -= dt;
         if (timeLeft <= 0) { timeLeft = 0; updateHud(); endGame(); return; }
       }
-      const interval = Math.max(config.minSpawnInterval, config.baseSpawnInterval - difficultyTime * 0.0045 - combo * 0.0035);
+      const interval = Math.max(config.minSpawnInterval, config.baseSpawnInterval - difficultyTime * 0.0018 - combo * 0.001);
       spawnTimer += dt;
       if (spawnTimer >= interval) { spawnTimer = 0; spawnWave(); }
       if (shakeTime > 0) shakeTime -= dt;
@@ -971,13 +893,13 @@
         item.y += item.speed * dt;
         item.x += item.drift * dt;
         item.rotation += item.spin * dt;
-        item.pulse += dt * 3.4;
+        item.pulse += dt * 2.4;
         if (item.x < item.r) { item.x = item.r; item.drift *= -1; }
         else if (item.x > width - item.r) { item.x = width - item.r; item.drift *= -1; }
         if (item.y + item.r > playableBottom) {
           item.alive = false;
           if (item.isCorrect && gameState === 'running') {
-            combo = 0; lives -= 1; shakeTime = 0.16; showToast('取り逃がし！', 'bad'); soundWrong();
+            combo = 0; lives -= 1; shakeTime = 0.14; showToast('取り逃がし！', 'bad'); soundWrong();
             generateQuestion(false); ensureOnlyOneCorrect(currentQuestion.answer); separateOverlaps(); startBgmIfNeeded('normal'); updateHud();
             if (lives <= 0) { endGame(); return; }
           }
@@ -987,9 +909,9 @@
       items = items.filter(i => i.alive);
       separateOverlaps();
 
-      for (const p of particles) { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 250 * dt; }
+      for (const p of particles) { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 220 * dt; }
       particles = particles.filter(p => p.t < p.life);
-      for (const s of slices) { s.t += dt; s.x += s.vx * dt; s.y += s.vy * dt; s.vy += 280 * dt; s.rotation += s.vr * dt; }
+      for (const s of slices) { s.t += dt; s.x += s.vx * dt; s.y += s.vy * dt; s.vy += 240 * dt; s.rotation += s.vr * dt; }
       slices = slices.filter(s => s.t < s.life);
 
       if (!items.some(i => i.alive && i.isCorrect)) {
@@ -1006,8 +928,8 @@
       ctx.strokeStyle = 'rgba(255,255,255,0.08)';
       ctx.lineWidth = 1;
       const gap = 42;
-      for (let x = 0; x <= width; x += gap) { ctx.beginPath(); ctx.moveTo(x, playableTop - 40); ctx.lineTo(x, playableBottom + 20); ctx.stroke(); }
-      for (let y = playableTop - 40; y <= playableBottom + 20; y += gap) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke(); }
+      for (let x = 0; x <= width; x += gap) { ctx.beginPath(); ctx.moveTo(x, playableTop - 30); ctx.lineTo(x, playableBottom + 20); ctx.stroke(); }
+      for (let y = playableTop - 30; y <= playableBottom + 20; y += gap) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke(); }
       ctx.restore();
     }
 
@@ -1079,10 +1001,10 @@
     }
     function drawFruitCore(item, alpha = 1) {
       const { body1, body2 } = item.theme;
-      const r = item.r * (1 + Math.sin(item.pulse || 0) * 0.022);
+      const r = item.r * (1 + Math.sin(item.pulse || 0) * 0.018);
       ctx.save();
       ctx.globalAlpha = alpha;
-      ctx.shadowBlur = 18;
+      ctx.shadowBlur = 16;
       ctx.shadowColor = 'rgba(0,0,0,.24)';
       const temp = { ...item, r };
       traceFruitShape(temp);
@@ -1119,7 +1041,7 @@
       ctx.rotate(item.rotation);
       if (item.big && currentQuestion && currentQuestion.boss) {
         ctx.save();
-        ctx.shadowBlur = 22;
+        ctx.shadowBlur = 20;
         ctx.shadowColor = 'rgba(255,217,105,.4)';
         ctx.beginPath();
         ctx.arc(0, 0, item.r * 1.08, 0, Math.PI * 2);
@@ -1157,14 +1079,14 @@
     function drawComboAura() {
       if (combo < 3) return;
       ctx.save();
-      ctx.globalAlpha = Math.min(0.18, combo * 0.012);
-      const radius = 50 + combo * 4;
-      const grad = ctx.createRadialGradient(width / 2, playableTop - 18, 10, width / 2, playableTop - 18, radius);
+      ctx.globalAlpha = Math.min(0.15, combo * 0.01);
+      const radius = 40 + combo * 3;
+      const grad = ctx.createRadialGradient(width / 2, playableTop - 14, 10, width / 2, playableTop - 14, radius);
       grad.addColorStop(0, 'rgba(255,255,255,.2)');
       grad.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.arc(width / 2, playableTop - 18, radius, 0, Math.PI * 2);
+      ctx.arc(width / 2, playableTop - 14, radius, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
@@ -1175,7 +1097,7 @@
       ctx.fillRect(0, 0, width, height);
       ctx.fillStyle = '#fff';
       ctx.textAlign = 'center';
-      ctx.font = '900 32px system-ui, sans-serif';
+      ctx.font = '900 30px system-ui, sans-serif';
       ctx.fillText('PAUSED', width / 2, height / 2);
       ctx.restore();
     }
@@ -1184,15 +1106,14 @@
       ctx.save();
       ctx.globalAlpha = 0.16;
       ctx.strokeStyle = timeLeft <= 10 ? 'rgba(255,120,120,1)' : 'rgba(255,255,255,1)';
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 5;
       ctx.strokeRect(3, playableTop - 6, width - 6, playableBottom - playableTop + 12);
       ctx.restore();
     }
-
     function draw() {
       ctx.clearRect(0, 0, width, height);
       let ox = 0, oy = 0;
-      if (shakeTime > 0) { ox = rand(-6, 6) * shakeTime * 7; oy = rand(-5, 5) * shakeTime * 7; }
+      if (shakeTime > 0) { ox = rand(-5, 5) * shakeTime * 6; oy = rand(-4, 4) * shakeTime * 6; }
       ctx.save();
       ctx.translate(ox, oy);
       drawMaskedTopArea();
@@ -1234,18 +1155,6 @@
     startBtn.addEventListener('click', resetGame);
     restartBtn.addEventListener('click', resetGame);
     pauseBtn.addEventListener('click', () => { if (gameState !== 'ready' && gameState !== 'over') togglePause(); });
-    soundBtn.addEventListener('click', () => {
-      soundOn = !soundOn;
-      soundBtn.textContent = soundOn ? '音ON' : '音OFF';
-      if (soundOn) { ensureAudio(); applyVolumeSettings(); if (gameState === 'running' || gameState === 'paused') startBgmIfNeeded(); }
-      else { applyVolumeSettings(); stopBgm(); }
-    });
-    volumeSlider.value = String(Math.round(volumeLevel * 100));
-    volumeSlider.addEventListener('input', (e) => {
-      volumeLevel = Number(e.target.value) / 100;
-      localStorage.setItem('fruitMathVolume', String(Math.round(volumeLevel * 100)));
-      if (masterGain) applyVolumeSettings();
-    });
     modeCards.forEach(card => card.addEventListener('click', () => setMode(card.dataset.mode)));
 
     window.addEventListener('resize', resize);
@@ -1255,7 +1164,6 @@
     resize();
     updateHud();
     bestScoreEl.textContent = bestScore;
-    soundBtn.textContent = soundOn ? '音ON' : '音OFF';
     setMode('endless');
     generateQuestion(false);
     requestAnimationFrame((ts) => {
