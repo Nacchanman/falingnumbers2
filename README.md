@@ -8,7 +8,7 @@
     :root {
       --bg-top: #12213b;
       --bg-bottom: #07111f;
-      --panel: rgba(8, 16, 30, 0.86);
+      --panel: rgba(8, 16, 30, 0.88);
       --line: rgba(255,255,255,0.12);
       --text: #eef4ff;
       --sub: #aec3e4;
@@ -40,6 +40,7 @@
       position: relative;
       width: min(100vw, 520px);
       height: 100vh;
+      height: 100dvh;
       max-height: 100dvh;
       overflow: hidden;
       background:
@@ -47,6 +48,10 @@
         linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
       border-left: 1px solid rgba(255,255,255,0.08);
       border-right: 1px solid rgba(255,255,255,0.08);
+      --safe-top: max(10px, env(safe-area-inset-top));
+      --safe-bottom: max(10px, env(safe-area-inset-bottom));
+      --hud-height: 92px;
+      --question-height: 130px;
     }
 
     canvas {
@@ -64,8 +69,8 @@
       top: 0;
       display: flex;
       justify-content: space-between;
-      gap: 10px;
-      padding: max(12px, env(safe-area-inset-top)) 12px 12px;
+      gap: 8px;
+      padding: calc(var(--safe-top) + 4px) 10px 8px;
       z-index: 5;
       pointer-events: none;
     }
@@ -80,30 +85,34 @@
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(4, auto);
-      gap: 8px;
-      padding: 10px 12px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+      padding: 10px 10px;
       align-items: center;
       min-height: 58px;
+      flex: 1;
+      min-width: 0;
     }
 
     .stat {
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 64px;
+      min-width: 0;
     }
 
     .label {
       font-size: 11px;
       color: var(--sub);
       line-height: 1.1;
+      white-space: nowrap;
     }
 
     .value {
-      font-size: 19px;
+      font-size: 18px;
       font-weight: 800;
       line-height: 1.2;
+      white-space: nowrap;
     }
 
     .controls {
@@ -111,32 +120,38 @@
       gap: 8px;
       pointer-events: auto;
       align-items: flex-start;
+      flex-shrink: 0;
     }
 
     .audioPanel {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
+      gap: 6px;
+      padding: 8px 8px;
       pointer-events: auto;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 168px;
     }
 
-    button, select, input[type="range"] {
+    button, input[type="range"] {
       border: 0;
       color: var(--text);
       background: rgba(255,255,255,0.08);
       border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 10px 14px;
+      padding: 10px 12px;
       font-weight: 700;
       min-height: 44px;
       box-shadow: var(--shadow);
+      font-size: 13px;
     }
 
     button { cursor: pointer; }
     button:active { transform: translateY(1px) scale(.99); }
+
     input[type="range"] {
-      width: 96px;
+      width: 82px;
       padding: 0;
       min-height: auto;
       height: 8px;
@@ -148,11 +163,11 @@
     .rangeWrap {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .rangeLabel {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--sub);
       font-weight: 700;
       white-space: nowrap;
@@ -160,12 +175,25 @@
 
     .questionBox {
       position: absolute;
-      right: 12px;
-      bottom: calc(12px + env(safe-area-inset-bottom));
-      width: min(60vw, 270px);
+      left: 10px;
+      right: 10px;
+      bottom: calc(var(--safe-bottom) + 8px);
       z-index: 5;
-      padding: 14px;
+      padding: 12px 14px;
       pointer-events: none;
+      min-height: 112px;
+    }
+
+    .questionTop {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .questionMain {
+      min-width: 0;
+      flex: 1;
     }
 
     .questionLabel {
@@ -175,10 +203,10 @@
     }
 
     .question {
-      font-size: clamp(24px, 5.5vw, 34px);
+      font-size: clamp(22px, 5.5vw, 34px);
       font-weight: 900;
       line-height: 1.15;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       word-break: break-word;
     }
 
@@ -190,14 +218,15 @@
 
     .modeTag {
       display: inline-flex;
-      margin-top: 8px;
       font-size: 11px;
       font-weight: 800;
       color: #fff;
-      padding: 5px 8px;
+      padding: 6px 8px;
       border-radius: 999px;
       background: rgba(255,255,255,0.12);
       border: 1px solid rgba(255,255,255,0.12);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .centerOverlay {
@@ -295,7 +324,7 @@
     .toast {
       position: absolute;
       left: 50%;
-      top: 92px;
+      top: calc(var(--safe-top) + 86px);
       transform: translateX(-50%);
       z-index: 7;
       min-width: 120px;
@@ -309,6 +338,7 @@
       background: var(--panel);
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
+      max-width: calc(100vw - 40px);
     }
 
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -319,7 +349,7 @@
     .bossBanner {
       position: absolute;
       left: 50%;
-      top: 146px;
+      top: calc(var(--safe-top) + 136px);
       transform: translateX(-50%);
       z-index: 7;
       padding: 10px 18px;
@@ -332,18 +362,65 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity .18s ease;
+      max-width: calc(100vw - 40px);
+      white-space: nowrap;
     }
 
     .bossBanner.show { opacity: 1; }
     .hidden { display: none; }
 
+    @media (max-width: 480px) {
+      #gameWrap {
+        --hud-height: 104px;
+        --question-height: 122px;
+      }
+
+      .hud {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .controls {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .audioPanel {
+        max-width: none;
+      }
+
+      .stats {
+        width: 100%;
+      }
+
+      .value {
+        font-size: 16px;
+      }
+    }
+
     @media (max-width: 420px) {
-      .stats { grid-template-columns: repeat(4, 1fr); }
-      .stat { min-width: 0; }
-      .value { font-size: 16px; }
-      .questionBox { width: min(64vw, 235px); }
+      #gameWrap {
+        --hud-height: 112px;
+        --question-height: 126px;
+      }
+
       .modeChooser { grid-template-columns: 1fr; }
-      .audioPanel { flex-wrap: wrap; justify-content: center; }
+      .question { font-size: clamp(20px, 6vw, 28px); }
+      .questionLabel, .hint, .label { font-size: 11px; }
+      button { font-size: 12px; }
+      .toast { top: calc(var(--safe-top) + 96px); }
+      .bossBanner { top: calc(var(--safe-top) + 146px); }
+    }
+
+    @media (max-height: 740px) {
+      #gameWrap {
+        --hud-height: 108px;
+        --question-height: 118px;
+      }
+
+      .questionBox { min-height: 100px; padding: 10px 12px; }
+      .question { margin-bottom: 4px; }
+      .hint { line-height: 1.35; }
     }
   </style>
 </head>
@@ -374,10 +451,14 @@
     <div class="bossBanner" id="bossBanner">BOSS QUESTION!</div>
 
     <div class="panel questionBox">
-      <div class="questionLabel">この答えのフルーツをタップ</div>
-      <div class="question" id="questionText">2 + 3</div>
-      <div class="hint" id="hintText">見た目では正解は分からない。計算して見抜こう。</div>
-      <div class="modeTag" id="modeTag">エンドレス</div>
+      <div class="questionTop">
+        <div class="questionMain">
+          <div class="questionLabel">この答えのフルーツをタップ</div>
+          <div class="question" id="questionText">2 + 3</div>
+          <div class="hint" id="hintText">見た目では正解は分からない。計算して見抜こう。</div>
+        </div>
+        <div class="modeTag" id="modeTag">エンドレス</div>
+      </div>
     </div>
 
     <div class="centerOverlay" id="startOverlay">
@@ -400,8 +481,8 @@
 
         <button class="big" id="startBtn">ゲーム開始</button>
         <div class="miniRow">
+          <div class="badge">重なりにくい配置</div>
           <div class="badge">8bit風BGM</div>
-          <div class="badge">フルーツ切れ演出</div>
           <div class="badge">ボス問題あり</div>
         </div>
       </div>
@@ -451,6 +532,11 @@
     let dpr = Math.max(1, window.devicePixelRatio || 1);
     let width = 0;
     let height = 0;
+    let topSafeZone = 110;
+    let bottomSafeZone = 130;
+    let playableTop = 110;
+    let playableBottom = 540;
+    let laneCenters = [];
 
     let gameState = 'ready';
     let mode = 'endless';
@@ -475,14 +561,17 @@
 
     const config = {
       baseSpawnInterval: 0.74,
-      minSpawnInterval: 0.26,
+      minSpawnInterval: 0.30,
       baseSpeed: 156,
       speedGainPerSec: 5.4,
       comboSpeedGain: 4.2,
       fruitSizeMin: 54,
       fruitSizeMax: 84,
-      maxVisible: 18,
-      sidePadding: 8,
+      maxVisible: 14,
+      laneCount: 4,
+      horizontalPadding: 10,
+      overlapPadding: 10,
+      spawnTries: 40,
       timeAttackDuration: 60,
     };
 
@@ -514,12 +603,35 @@
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      recalcSafeZones();
+    }
+
+    function recalcSafeZones() {
+      const styles = getComputedStyle(wrap);
+      const safeTop = parseFloat(styles.getPropertyValue('--safe-top')) || 10;
+      const safeBottom = parseFloat(styles.getPropertyValue('--safe-bottom')) || 10;
+      const hudHeight = parseFloat(styles.getPropertyValue('--hud-height')) || 96;
+      const questionHeight = parseFloat(styles.getPropertyValue('--question-height')) || 126;
+
+      topSafeZone = safeTop + hudHeight;
+      bottomSafeZone = safeBottom + questionHeight;
+      playableTop = Math.max(70, topSafeZone + 14);
+      playableBottom = Math.max(playableTop + 120, height - bottomSafeZone - 10);
+
+      const laneCount = width < 360 ? 3 : config.laneCount;
+      const usableWidth = width - config.horizontalPadding * 2;
+      const laneWidth = usableWidth / laneCount;
+      laneCenters = [];
+      for (let i = 0; i < laneCount; i++) {
+        laneCenters.push(config.horizontalPadding + laneWidth * (i + 0.5));
+      }
     }
 
     function rand(min, max) { return Math.random() * (max - min) + min; }
     function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
     function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
     function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+    function distanceSq(ax, ay, bx, by) { const dx = ax - bx; const dy = ay - by; return dx * dx + dy * dy; }
 
     function updateHud() {
       scoreEl.textContent = score;
@@ -772,18 +884,51 @@
 
     function createFruitTheme() { return { ...pick(fruitThemes) }; }
 
+    function findSpawnPosition(radius) {
+      const lanePool = [...laneCenters];
+      for (let i = lanePool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [lanePool[i], lanePool[j]] = [lanePool[j], lanePool[i]];
+      }
+
+      const upperSpawnBase = -radius - rand(10, 70);
+      for (const laneX of lanePool) {
+        for (let t = 0; t < config.spawnTries; t++) {
+          const x = clamp(laneX + rand(-12, 12), config.horizontalPadding + radius, width - config.horizontalPadding - radius);
+          const y = upperSpawnBase - t * rand(4, 10);
+          let blocked = false;
+          for (const item of items) {
+            if (!item.alive) continue;
+            const minGap = (item.r + radius + config.overlapPadding);
+            const sameLaneish = Math.abs(item.x - x) < minGap * 0.9;
+            const nearSpawnBand = item.y < playableTop + radius * 3.4;
+            if (sameLaneish && nearSpawnBand && distanceSq(item.x, item.y, x, y) < minGap * minGap) {
+              blocked = true;
+              break;
+            }
+          }
+          if (!blocked) return { x, y };
+        }
+      }
+
+      return {
+        x: clamp(pick(laneCenters) + rand(-14, 14), config.horizontalPadding + radius, width - config.horizontalPadding - radius),
+        y: -radius - rand(40, 140),
+      };
+    }
+
     function createItem(value, isCorrect = false, options = {}) {
-      const size = rand(config.fruitSizeMin, config.fruitSizeMax) * (options.big ? 1.28 : 1);
+      const size = rand(config.fruitSizeMin, config.fruitSizeMax) * (options.big ? 1.22 : 1);
       const radius = size / 2;
-      const x = rand(config.sidePadding + radius, width - config.sidePadding - radius);
+      const spawn = findSpawnPosition(radius);
       const comboBoost = combo * config.comboSpeedGain;
       const speed = config.baseSpeed + difficultyTime * config.speedGainPerSec + comboBoost + rand(-14, 62);
-      const drift = rand(-18, 18);
+      const drift = rand(-10, 10);
       const theme = createFruitTheme();
 
       items.push({
-        x,
-        y: -radius - rand(0, 140),
+        x: spawn.x,
+        y: spawn.y,
         r: radius,
         size,
         value,
@@ -791,13 +936,41 @@
         speed,
         drift,
         rotation: rand(-0.16, 0.16),
-        spin: rand(-0.45, 0.45),
+        spin: rand(-0.38, 0.38),
         pulse: rand(0, Math.PI * 2),
         shapeSeed: rand(0.88, 1.14),
         theme,
         alive: true,
         big: !!options.big,
       });
+    }
+
+    function separateOverlaps() {
+      for (let pass = 0; pass < 2; pass++) {
+        for (let i = 0; i < items.length; i++) {
+          const a = items[i];
+          if (!a.alive) continue;
+          for (let j = i + 1; j < items.length; j++) {
+            const b = items[j];
+            if (!b.alive) continue;
+            const minDist = a.r + b.r + 6;
+            const dx = b.x - a.x;
+            const dy = b.y - a.y;
+            const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
+            if (dist < minDist) {
+              const push = (minDist - dist) * 0.5;
+              const nx = dx / dist;
+              const ny = dy / dist;
+              a.x -= nx * push;
+              b.x += nx * push;
+              if (a.y < playableTop + 140) a.y -= ny * push * 0.3;
+              if (b.y < playableTop + 140) b.y += ny * push * 0.3;
+              a.x = clamp(a.x, a.r, width - a.r);
+              b.x = clamp(b.x, b.r, width - b.r);
+            }
+          }
+        }
+      }
     }
 
     function clearCorrectFlags() {
@@ -818,11 +991,12 @@
     function spawnWave() {
       if (!currentQuestion) generateQuestion();
       const visibleCorrect = items.some(i => i.isCorrect && i.alive);
-      const baseCount = bossActive ? randInt(2, 4) : randInt(1, 3 + Math.floor(difficultyTime / 18));
+      const baseCount = bossActive ? randInt(1, 3) : randInt(1, 2 + Math.floor(difficultyTime / 22));
 
       if (!visibleCorrect) createItem(currentQuestion.answer, true, { big: bossActive });
       for (let i = 0; i < baseCount; i++) createItem(randomWrongAnswer(currentQuestion.answer), false);
       ensureOnlyOneCorrect(currentQuestion.answer);
+      separateOverlaps();
       if (items.length > config.maxVisible) items.splice(0, items.length - config.maxVisible);
     }
 
@@ -853,6 +1027,7 @@
         nextBossAt += 7;
         items = items.filter(i => i.alive && !i.isCorrect);
         createItem(currentQuestion.answer, true, { big: true });
+        separateOverlaps();
       }
     }
 
@@ -870,6 +1045,7 @@
       generateQuestion(false);
       maybeTriggerBoss();
       ensureOnlyOneCorrect(currentQuestion.answer);
+      separateOverlaps();
       startBgmIfNeeded(currentQuestion && currentQuestion.boss ? 'boss' : 'normal');
       updateHud();
     }
@@ -921,6 +1097,7 @@
       startBgmIfNeeded('normal');
       createItem(currentQuestion.answer, true);
       for (let i = 0; i < 4; i++) createItem(randomWrongAnswer(currentQuestion.answer), false);
+      separateOverlaps();
       updateHud();
       gameOverOverlay.classList.add('hidden');
       startOverlay.classList.add('hidden');
@@ -952,7 +1129,7 @@
         }
       }
 
-      const interval = Math.max(config.minSpawnInterval, config.baseSpawnInterval - difficultyTime * 0.006 - combo * 0.004);
+      const interval = Math.max(config.minSpawnInterval, config.baseSpawnInterval - difficultyTime * 0.0045 - combo * 0.0035);
       spawnTimer += dt;
       if (spawnTimer >= interval) {
         spawnTimer = 0;
@@ -976,7 +1153,7 @@
           item.drift *= -1;
         }
 
-        if (item.y - item.r > height) {
+        if (item.y + item.r > playableBottom) {
           item.alive = false;
           if (item.isCorrect && gameState === 'running') {
             combo = 0;
@@ -986,6 +1163,7 @@
             soundWrong();
             generateQuestion(false);
             ensureOnlyOneCorrect(currentQuestion.answer);
+            separateOverlaps();
             startBgmIfNeeded('normal');
             updateHud();
             if (lives <= 0) {
@@ -997,6 +1175,7 @@
       }
 
       items = items.filter(i => i.alive);
+      separateOverlaps();
 
       for (const p of particles) {
         p.t += dt;
@@ -1018,6 +1197,7 @@
       if (!items.some(i => i.alive && i.isCorrect)) {
         createItem(currentQuestion.answer, true, { big: currentQuestion.boss });
         ensureOnlyOneCorrect(currentQuestion.answer);
+        separateOverlaps();
       }
 
       updateHud();
@@ -1030,20 +1210,29 @@
       ctx.lineWidth = 1;
       const gap = 42;
       for (let x = 0; x <= width; x += gap) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, playableTop - 40); ctx.lineTo(x, playableBottom + 20); ctx.stroke();
       }
-      for (let y = 0; y <= height; y += gap) {
+      for (let y = playableTop - 40; y <= playableBottom + 20; y += gap) {
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
       }
       ctx.restore();
     }
 
+    function drawPlayableZoneGuides() {
+      ctx.save();
+      ctx.globalAlpha = 0.08;
+      ctx.fillStyle = 'rgba(255,255,255,1)';
+      ctx.fillRect(0, 0, width, playableTop - 8);
+      ctx.fillRect(0, playableBottom + 8, width, height - (playableBottom + 8));
+      ctx.restore();
+    }
+
     function drawBottomDangerZone() {
-      const h = 96;
-      const y = height - h;
-      const grad = ctx.createLinearGradient(0, y, 0, height);
+      const h = Math.min(90, height - playableBottom + 26);
+      const y = playableBottom - 20;
+      const grad = ctx.createLinearGradient(0, y, 0, y + h);
       grad.addColorStop(0, 'rgba(255, 98, 120, 0.0)');
-      grad.addColorStop(1, 'rgba(255, 98, 120, 0.12)');
+      grad.addColorStop(1, 'rgba(255, 98, 120, 0.14)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, y, width, h);
     }
@@ -1188,12 +1377,12 @@
       ctx.save();
       ctx.globalAlpha = Math.min(0.18, combo * 0.012);
       const radius = 50 + combo * 4;
-      const grad = ctx.createRadialGradient(width / 2, 100, 10, width / 2, 100, radius);
+      const grad = ctx.createRadialGradient(width / 2, playableTop - 14, 10, width / 2, playableTop - 14, radius);
       grad.addColorStop(0, 'rgba(255,255,255,.2)');
       grad.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.arc(width / 2, 100, radius, 0, Math.PI * 2);
+      ctx.arc(width / 2, playableTop - 14, radius, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
@@ -1216,7 +1405,7 @@
       ctx.globalAlpha = 0.16;
       ctx.strokeStyle = timeLeft <= 10 ? 'rgba(255,120,120,1)' : 'rgba(255,255,255,1)';
       ctx.lineWidth = 6;
-      ctx.strokeRect(3, 3, width - 6, height - 6);
+      ctx.strokeRect(3, topSafeZone - 2, width - 6, playableBottom - topSafeZone + 6);
       ctx.restore();
     }
 
@@ -1229,6 +1418,7 @@
       }
       ctx.save();
       ctx.translate(ox, oy);
+      drawPlayableZoneGuides();
       drawBackgroundGrid();
       drawBottomDangerZone();
       drawComboAura();
@@ -1238,14 +1428,6 @@
       drawTimeAttackFrame();
       ctx.restore();
       drawPausedLayer();
-    }
-
-    function loop(ts) {
-      const dt = clamp((ts - lastTs) / 1000, 0, 0.033);
-      lastTs = ts;
-      if (gameState === 'running') update(dt);
-      draw();
-      requestAnimationFrame(loop);
     }
 
     function getPointFromEvent(e) {
@@ -1258,6 +1440,7 @@
       if (gameState !== 'running') return;
       ensureAudio();
       const p = getPointFromEvent(e);
+      if (p.y < playableTop - 6 || p.y > playableBottom + 10) return;
       let tapped = null;
       for (let i = items.length - 1; i >= 0; i--) {
         const item = items[i];
@@ -1305,6 +1488,7 @@
 
     window.addEventListener('resize', resize);
     window.addEventListener('orientationchange', resize);
+    window.visualViewport?.addEventListener('resize', resize);
 
     resize();
     updateHud();
@@ -1314,7 +1498,13 @@
     generateQuestion(false);
     requestAnimationFrame((ts) => {
       lastTs = ts;
-      requestAnimationFrame(loop);
+      requestAnimationFrame(function loop(ts2) {
+        const dt = clamp((ts2 - lastTs) / 1000, 0, 0.033);
+        lastTs = ts2;
+        if (gameState === 'running') update(dt);
+        draw();
+        requestAnimationFrame(loop);
+      });
     });
   </script>
 </body>
