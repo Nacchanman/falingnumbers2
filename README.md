@@ -1,21 +1,29 @@
-
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
-  <title>Fruit Math Fall Deluxe</title>
+  <title>フルーツ大収穫祭</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Yomogi:wght@400;700&display=swap');
+
     :root {
-      --bg-top: #12213b;
-      --bg-bottom: #07111f;
-      --panel: rgba(8, 16, 30, 0.92);
-      --line: rgba(255,255,255,0.12);
-      --text: #eef4ff;
-      --sub: #aec3e4;
-      --good: #61e59b;
-      --bad: #ff7f8d;
-      --warn: #ffd969;
-      --shadow: 0 12px 30px rgba(0,0,0,.28);
+      --sky-top: #bfe9ff;
+      --sky-bottom: #e8fff3;
+      --forest-1: #244b2f;
+      --forest-2: #2f6a39;
+      --forest-3: #4d8f4f;
+      --forest-4: #7dbc71;
+      --panel: rgba(12, 30, 20, 0.70);
+      --line: rgba(255,255,255,0.16);
+      --text: #fffef8;
+      --sub: #e8f6ea;
+      --good: #6ff1a1;
+      --bad: #ff8695;
+      --warn: #ffe17c;
+      --shadow: 0 12px 30px rgba(0,0,0,.22);
+      --brown: #6a4b2e;
+      --pink: #ff8db2;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -25,9 +33,9 @@
       height: 100%;
       overflow: hidden;
       color: var(--text);
-      background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: 'Kiwi Maru', system-ui, sans-serif;
       touch-action: manipulation;
+      background: linear-gradient(180deg, var(--sky-top), var(--sky-bottom));
     }
 
     body {
@@ -44,10 +52,10 @@
       max-height: 100dvh;
       overflow: hidden;
       background:
-        radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 28%),
-        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
-      border-left: 1px solid rgba(255,255,255,0.08);
-      border-right: 1px solid rgba(255,255,255,0.08);
+        linear-gradient(180deg, rgba(255,255,255,.20), rgba(255,255,255,0) 28%),
+        linear-gradient(180deg, var(--sky-top), var(--sky-bottom));
+      border-left: 1px solid rgba(255,255,255,0.10);
+      border-right: 1px solid rgba(255,255,255,0.10);
       --safe-top: max(10px, env(safe-area-inset-top));
     }
 
@@ -59,11 +67,38 @@
       display: block;
     }
 
+    .gameHeader {
+      position: absolute;
+      top: calc(var(--safe-top) + 2px);
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    .gameTitle {
+      display: inline-block;
+      padding: 4px 16px 6px;
+      font-size: clamp(22px, 6vw, 34px);
+      font-weight: 700;
+      letter-spacing: .03em;
+      color: #fff7fb;
+      text-shadow:
+        0 2px 0 rgba(120, 52, 81, .55),
+        0 6px 18px rgba(255,255,255,.25),
+        0 4px 12px rgba(0,0,0,.18);
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,170,207,.88), rgba(255,126,177,.72));
+      border: 1px solid rgba(255,255,255,.38);
+      box-shadow: 0 10px 20px rgba(255,141,178,.24);
+    }
+
     .topUi {
       position: absolute;
       left: 8px;
       right: 8px;
-      top: calc(var(--safe-top) + 4px);
+      top: calc(var(--safe-top) + 54px);
       z-index: 5;
       display: grid;
       gap: 6px;
@@ -73,9 +108,9 @@
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
-      border-radius: 14px;
+      border-radius: 18px;
       box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
     }
 
     .stats {
@@ -102,7 +137,7 @@
 
     .value {
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 700;
       line-height: 1.15;
       white-space: nowrap;
     }
@@ -132,7 +167,7 @@
 
     .question {
       font-size: clamp(18px, 5vw, 26px);
-      font-weight: 900;
+      font-weight: 700;
       line-height: 1.08;
       margin-bottom: 2px;
       word-break: break-word;
@@ -147,12 +182,12 @@
     .modeTag {
       display: inline-flex;
       font-size: 10px;
-      font-weight: 800;
+      font-weight: 700;
       color: #fff;
       padding: 4px 7px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.16);
       white-space: nowrap;
       flex-shrink: 0;
     }
@@ -161,7 +196,6 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: 8px;
       pointer-events: none;
     }
 
@@ -175,7 +209,7 @@
     button {
       border: 0;
       color: var(--text);
-      background: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.10);
       border: 1px solid var(--line);
       border-radius: 14px;
       padding: 8px 12px;
@@ -184,6 +218,7 @@
       box-shadow: var(--shadow);
       font-size: 12px;
       cursor: pointer;
+      font-family: inherit;
     }
 
     button:active { transform: translateY(1px) scale(.99); }
@@ -197,13 +232,13 @@
       min-width: 120px;
       padding: 8px 12px;
       border-radius: 999px;
-      font-weight: 800;
+      font-weight: 700;
       text-align: center;
       opacity: 0;
       pointer-events: none;
       transition: opacity .18s ease, transform .18s ease;
-      background: var(--panel);
-      border: 1px solid var(--line);
+      background: rgba(19, 52, 28, .80);
+      border: 1px solid rgba(255,255,255,.16);
       box-shadow: var(--shadow);
       max-width: calc(100vw - 40px);
       font-size: 12px;
@@ -222,10 +257,10 @@
       z-index: 7;
       padding: 8px 14px;
       border-radius: 999px;
-      background: rgba(255, 217, 105, 0.12);
-      color: var(--warn);
-      font-weight: 900;
-      border: 1px solid rgba(255, 217, 105, 0.26);
+      background: rgba(255, 225, 124, 0.18);
+      color: #fff7cf;
+      font-weight: 700;
+      border: 1px solid rgba(255, 225, 124, 0.28);
       box-shadow: var(--shadow);
       opacity: 0;
       pointer-events: none;
@@ -245,88 +280,68 @@
       justify-content: center;
       padding: 20px;
       z-index: 8;
-      background: linear-gradient(180deg, rgba(4,8,16,.18), rgba(4,8,16,.62));
+      background: linear-gradient(180deg, rgba(19,40,23,.14), rgba(19,40,23,.44));
     }
 
     .card {
-      width: min(92vw, 430px);
-      padding: 18px;
+      width: min(92vw, 420px);
+      padding: 20px 18px;
       text-align: center;
+      background: rgba(15, 38, 23, .78);
     }
 
     .title {
-      margin: 0 0 8px;
-      font-size: clamp(24px, 7vw, 34px);
-      font-weight: 900;
-    }
-
-    .desc {
-      margin: 0 auto 14px;
-      color: var(--sub);
-      font-size: 14px;
-      line-height: 1.6;
-      max-width: 34em;
+      margin: 0 0 14px;
+      font-size: clamp(28px, 8vw, 40px);
+      font-weight: 700;
+      color: #fff7fb;
+      text-shadow:
+        0 2px 0 rgba(120, 52, 81, .55),
+        0 8px 20px rgba(255,255,255,.15),
+        0 6px 14px rgba(0,0,0,.18);
     }
 
     .big {
       width: 100%;
-      padding: 14px 16px;
-      font-size: 17px;
-      background: linear-gradient(180deg, rgba(150,197,255,.28), rgba(107,184,255,.12));
-    }
-
-    .miniRow {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid var(--line);
-      color: var(--sub);
-      font-size: 12px;
+      padding: 15px 16px;
+      font-size: 18px;
+      background: linear-gradient(180deg, rgba(255,182,210,.88), rgba(255,132,182,.74));
+      color: #fff;
+      border-color: rgba(255,255,255,.28);
     }
 
     .modeChooser {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
-      margin: 14px 0;
+      margin: 0 0 14px;
       text-align: left;
     }
 
     .modeCard {
       padding: 12px;
       border-radius: 14px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,0.06);
       cursor: pointer;
       user-select: none;
     }
 
     .modeCard.active {
-      outline: 2px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.08);
+      outline: 2px solid rgba(255,190,214,.35);
+      background: rgba(255,255,255,0.10);
     }
 
     .modeCardTitle {
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 700;
       margin-bottom: 4px;
     }
 
     .modeCardDesc {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--sub);
-      line-height: 1.5;
+      line-height: 1.4;
     }
 
     .hidden { display: none; }
@@ -334,12 +349,17 @@
     @media (max-width: 480px) {
       .question { font-size: clamp(17px, 5.2vw, 24px); }
       .modeChooser { grid-template-columns: 1fr; }
+      .gameTitle { font-size: clamp(20px, 5.8vw, 30px); }
     }
   </style>
 </head>
 <body>
   <div id="gameWrap">
     <canvas id="gameCanvas"></canvas>
+
+    <div class="gameHeader">
+      <div class="gameTitle">フルーツ大収穫祭</div>
+    </div>
 
     <div class="topUi" id="topUi">
       <div class="panel stats">
@@ -368,44 +388,29 @@
     </div>
 
     <div class="toast" id="toast"></div>
-    <div class="bossBanner" id="bossBanner">BOSS QUESTION!</div>
+    <div class="bossBanner" id="bossBanner">ボス問題！</div>
 
     <div class="centerOverlay" id="startOverlay">
       <div class="panel card">
-        <h1 class="title">Fruit Math Fall Deluxe</h1>
-        <p class="desc">
-          フルーツに乗った数字が落ちてくる。計算問題の答えを見抜いてタップ。色では正解が分からないので、暗算力と瞬発力がそのままスコアになります。
-        </p>
-
+        <h1 class="title">フルーツ大収穫祭</h1>
         <div class="modeChooser">
           <div class="modeCard active" data-mode="endless">
             <div class="modeCardTitle">エンドレス</div>
-            <div class="modeCardDesc">ライフが尽きるまで。コンボでどんどん加速。</div>
+            <div class="modeCardDesc">ライフがなくなるまで遊ぶ</div>
           </div>
           <div class="modeCard" data-mode="timeattack">
             <div class="modeCardTitle">タイムアタック</div>
-            <div class="modeCardDesc">60秒勝負。短時間でどこまで稼げるか。</div>
+            <div class="modeCardDesc">60秒でどこまで取れるか</div>
           </div>
         </div>
-
-        <button class="big" id="startBtn">ゲーム開始</button>
-        <div class="miniRow">
-          <div class="badge">プレイ画面を拡大</div>
-          <div class="badge">落下をゆっくり化</div>
-          <div class="badge">重なりにくい配置</div>
-        </div>
+        <button class="big" id="startBtn">スタート</button>
       </div>
     </div>
 
     <div class="centerOverlay hidden" id="gameOverOverlay">
       <div class="panel card">
-        <h2 class="title">ゲーム終了</h2>
-        <p class="desc" id="finalText">スコア: 0</p>
-        <button class="big" id="restartBtn">もう一度遊ぶ</button>
-        <div class="miniRow">
-          <div class="badge">最高スコア: <span id="bestScore">0</span></div>
-          <div class="badge">モード: <span id="finalMode">エンドレス</span></div>
-        </div>
+        <h2 class="title">フルーツ大収穫祭</h2>
+        <button class="big" id="restartBtn">もう一度</button>
       </div>
     </div>
   </div>
@@ -428,9 +433,6 @@
 
     const startOverlay = document.getElementById('startOverlay');
     const gameOverOverlay = document.getElementById('gameOverOverlay');
-    const finalTextEl = document.getElementById('finalText');
-    const bestScoreEl = document.getElementById('bestScore');
-    const finalModeEl = document.getElementById('finalMode');
 
     const startBtn = document.getElementById('startBtn');
     const restartBtn = document.getElementById('restartBtn');
@@ -449,7 +451,6 @@
     let score = 0;
     let combo = 0;
     let lives = 3;
-    let bestScore = Number(localStorage.getItem('fruitMathBestDeluxe') || 0);
     let timeLeft = 60;
 
     let items = [];
@@ -514,7 +515,7 @@
       const topUiRect = topUiEl.getBoundingClientRect();
       const wrapRect = wrap.getBoundingClientRect();
       const uiBottom = topUiRect.bottom - wrapRect.top;
-      playableTop = Math.max(140, Math.ceil(uiBottom + 10));
+      playableTop = Math.max(150, Math.ceil(uiBottom + 10));
       playableBottom = height - 8;
       if (playableBottom < playableTop + 180) playableBottom = playableTop + 180;
       toastEl.style.top = `${playableTop - 14}px`;
@@ -537,7 +538,6 @@
       scoreEl.textContent = score;
       comboEl.textContent = combo;
       livesEl.textContent = lives;
-      bestScoreEl.textContent = bestScore;
       timerEl.textContent = mode === 'timeattack' ? Math.max(0, Math.ceil(timeLeft)) : '--';
       modeTagEl.textContent = mode === 'timeattack' ? 'タイムアタック' : 'エンドレス';
     }
@@ -844,13 +844,6 @@
     function endGame() {
       gameState = 'over';
       stopBgm();
-      finalTextEl.textContent = mode === 'timeattack' ? `スコア: ${score} / 連続正解: ${combo} / 60秒終了` : `スコア: ${score} / 連続正解: ${combo}`;
-      if (score > bestScore) {
-        bestScore = score;
-        localStorage.setItem('fruitMathBestDeluxe', String(bestScore));
-        bestScoreEl.textContent = bestScore;
-      }
-      finalModeEl.textContent = mode === 'timeattack' ? 'タイムアタック' : 'エンドレス';
       gameOverOverlay.classList.remove('hidden');
       pauseBtn.textContent = '一時停止';
       bossBannerEl.classList.remove('show');
@@ -908,7 +901,6 @@
 
       items = items.filter(i => i.alive);
       separateOverlaps();
-
       for (const p of particles) { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 220 * dt; }
       particles = particles.filter(p => p.t < p.life);
       for (const s of slices) { s.t += dt; s.x += s.vx * dt; s.y += s.vy * dt; s.vy += 240 * dt; s.rotation += s.vr * dt; }
@@ -922,10 +914,69 @@
       updateHud();
     }
 
+    function drawForestBackground() {
+      const sky = ctx.createLinearGradient(0, 0, 0, height);
+      sky.addColorStop(0, '#c8efff');
+      sky.addColorStop(0.42, '#dff9e7');
+      sky.addColorStop(1, '#9ed08e');
+      ctx.fillStyle = sky;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.fillStyle = 'rgba(255,255,255,.45)';
+      ctx.beginPath();
+      ctx.arc(width * 0.18, 82, 34, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(width * 0.82, 110, 28, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#8cc47d';
+      ctx.beginPath();
+      ctx.ellipse(width * 0.5, height * 0.34, width * 0.62, 62, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#6fae67';
+      ctx.beginPath();
+      ctx.ellipse(width * 0.5, height * 0.45, width * 0.74, 86, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.fillStyle = '#4f8d50';
+      ctx.beginPath();
+      ctx.ellipse(width * 0.5, height * 0.60, width * 0.88, 120, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      function drawTree(x, y, scale) {
+        ctx.fillStyle = '#7b5432';
+        ctx.fillRect(x - 6 * scale, y, 12 * scale, 58 * scale);
+        ctx.fillStyle = '#3f7f40';
+        ctx.beginPath();
+        ctx.arc(x, y, 28 * scale, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x - 20 * scale, y + 10 * scale, 22 * scale, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x + 20 * scale, y + 12 * scale, 22 * scale, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      drawTree(width * 0.12, height * 0.54, 1.0);
+      drawTree(width * 0.28, height * 0.50, 1.15);
+      drawTree(width * 0.76, height * 0.52, 1.1);
+      drawTree(width * 0.90, height * 0.57, 0.95);
+
+      const ground = ctx.createLinearGradient(0, playableTop, 0, height);
+      ground.addColorStop(0, 'rgba(28,76,35,.12)');
+      ground.addColorStop(0.2, 'rgba(24,66,31,.05)');
+      ground.addColorStop(1, 'rgba(31,77,34,.18)');
+      ctx.fillStyle = ground;
+      ctx.fillRect(0, playableTop - 40, width, height - playableTop + 40);
+    }
+
     function drawBackgroundGrid() {
       ctx.save();
-      ctx.globalAlpha = 0.11;
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.globalAlpha = 0.07;
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
       ctx.lineWidth = 1;
       const gap = 42;
       for (let x = 0; x <= width; x += gap) { ctx.beginPath(); ctx.moveTo(x, playableTop - 30); ctx.lineTo(x, playableBottom + 20); ctx.stroke(); }
@@ -935,8 +986,10 @@
 
     function drawMaskedTopArea() {
       ctx.save();
-      ctx.globalAlpha = 0.12;
-      ctx.fillStyle = 'rgba(255,255,255,1)';
+      const shade = ctx.createLinearGradient(0, 0, 0, playableTop);
+      shade.addColorStop(0, 'rgba(255,255,255,.16)');
+      shade.addColorStop(1, 'rgba(255,255,255,.04)');
+      ctx.fillStyle = shade;
       ctx.fillRect(0, 0, width, playableTop - 4);
       ctx.restore();
     }
@@ -945,8 +998,8 @@
       const h = Math.min(90, height - playableBottom + 26);
       const y = playableBottom - 20;
       const grad = ctx.createLinearGradient(0, y, 0, y + h);
-      grad.addColorStop(0, 'rgba(255, 98, 120, 0.0)');
-      grad.addColorStop(1, 'rgba(255, 98, 120, 0.14)');
+      grad.addColorStop(0, 'rgba(255, 120, 140, 0.0)');
+      grad.addColorStop(1, 'rgba(255, 120, 140, 0.14)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, y, width, h);
     }
@@ -1030,7 +1083,7 @@
       ctx.textBaseline = 'middle';
       ctx.lineWidth = Math.max(3, r * 0.09);
       ctx.strokeStyle = 'rgba(0,0,0,.22)';
-      ctx.font = `900 ${Math.max(21, r * 0.86)}px system-ui, sans-serif`;
+      ctx.font = `900 ${Math.max(21, r * 0.86)}px 'Kiwi Maru', sans-serif`;
       ctx.strokeText(String(item.value), 0, r * 0.05);
       ctx.fillText(String(item.value), 0, r * 0.05);
       ctx.restore();
@@ -1097,25 +1150,27 @@
       ctx.fillRect(0, 0, width, height);
       ctx.fillStyle = '#fff';
       ctx.textAlign = 'center';
-      ctx.font = '900 30px system-ui, sans-serif';
+      ctx.font = '700 30px Kiwi Maru, sans-serif';
       ctx.fillText('PAUSED', width / 2, height / 2);
       ctx.restore();
     }
     function drawTimeAttackFrame() {
       if (mode !== 'timeattack') return;
       ctx.save();
-      ctx.globalAlpha = 0.16;
+      ctx.globalAlpha = 0.14;
       ctx.strokeStyle = timeLeft <= 10 ? 'rgba(255,120,120,1)' : 'rgba(255,255,255,1)';
       ctx.lineWidth = 5;
       ctx.strokeRect(3, playableTop - 6, width - 6, playableBottom - playableTop + 12);
       ctx.restore();
     }
+
     function draw() {
       ctx.clearRect(0, 0, width, height);
       let ox = 0, oy = 0;
       if (shakeTime > 0) { ox = rand(-5, 5) * shakeTime * 6; oy = rand(-4, 4) * shakeTime * 6; }
       ctx.save();
       ctx.translate(ox, oy);
+      drawForestBackground();
       drawMaskedTopArea();
       drawBackgroundGrid();
       drawBottomDangerZone();
@@ -1128,16 +1183,13 @@
       drawPausedLayer();
     }
 
-    function getPointFromEvent(e) {
-      const rect = canvas.getBoundingClientRect();
-      if (e.touches && e.touches[0]) return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
-      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    }
-
     function handlePointer(e) {
       if (gameState !== 'running') return;
       ensureAudio();
-      const p = getPointFromEvent(e);
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches && e.touches[0] ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches && e.touches[0] ? e.touches[0].clientY : e.clientY;
+      const p = { x: clientX - rect.left, y: clientY - rect.top };
       if (p.y < playableTop - 4 || p.y > playableBottom + 8) return;
       let tapped = null;
       for (let i = items.length - 1; i >= 0; i--) {
@@ -1163,7 +1215,6 @@
 
     resize();
     updateHud();
-    bestScoreEl.textContent = bestScore;
     setMode('endless');
     generateQuestion(false);
     requestAnimationFrame((ts) => {
