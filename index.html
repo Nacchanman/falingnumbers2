@@ -5,15 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
   <title>フルーツ大収穫祭</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Yomogi:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Yomogi&display=swap');
 
     :root {
       --sky-top: #bfe9ff;
       --sky-bottom: #e8fff3;
-      --forest-1: #244b2f;
-      --forest-2: #2f6a39;
-      --forest-3: #4d8f4f;
-      --forest-4: #7dbc71;
       --panel: rgba(12, 30, 20, 0.70);
       --line: rgba(255,255,255,0.16);
       --text: #fffef8;
@@ -22,7 +18,6 @@
       --bad: #ff8695;
       --warn: #ffe17c;
       --shadow: 0 12px 30px rgba(0,0,0,.22);
-      --brown: #6a4b2e;
       --pink: #ff8db2;
     }
 
@@ -33,7 +28,7 @@
       height: 100%;
       overflow: hidden;
       color: var(--text);
-      font-family: 'Kiwi Maru', system-ui, sans-serif;
+      font-family: 'Yomogi', system-ui, sans-serif;
       touch-action: manipulation;
       background: linear-gradient(180deg, var(--sky-top), var(--sky-bottom));
     }
@@ -81,7 +76,7 @@
       display: inline-block;
       padding: 4px 16px 6px;
       font-size: clamp(22px, 6vw, 34px);
-      font-weight: 700;
+      font-weight: 400;
       letter-spacing: .03em;
       color: #fff7fb;
       text-shadow:
@@ -278,22 +273,23 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
       z-index: 8;
       background: linear-gradient(180deg, rgba(19,40,23,.14), rgba(19,40,23,.44));
     }
 
     .card {
-      width: min(92vw, 420px);
-      padding: 20px 18px;
+      width: min(94vw, 430px);
+      padding: 18px 16px;
       text-align: center;
-      background: rgba(15, 38, 23, .78);
+      background: rgba(15, 38, 23, .80);
+      border-radius: 24px;
     }
 
     .title {
-      margin: 0 0 14px;
+      margin: 0 0 12px;
       font-size: clamp(28px, 8vw, 40px);
-      font-weight: 700;
+      font-weight: 400;
       color: #fff7fb;
       text-shadow:
         0 2px 0 rgba(120, 52, 81, .55),
@@ -344,12 +340,52 @@
       line-height: 1.4;
     }
 
+    .resultScore {
+      font-size: 20px;
+      color: #fff7d1;
+      margin-bottom: 8px;
+    }
+
+    .resultRank {
+      font-size: clamp(22px, 6vw, 30px);
+      color: #fff5a8;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 0 rgba(98,75,18,.5);
+    }
+
+    .resultHint {
+      font-size: 12px;
+      color: var(--sub);
+      margin-top: 8px;
+      margin-bottom: 10px;
+    }
+
+    .resultIllustWrap {
+      width: 170px;
+      height: 170px;
+      margin: 0 auto 10px;
+      border-radius: 24px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .12s ease;
+    }
+
+    .resultIllustWrap:active {
+      transform: scale(.98);
+    }
+
     .hidden { display: none; }
 
     @media (max-width: 480px) {
       .question { font-size: clamp(17px, 5.2vw, 24px); }
       .modeChooser { grid-template-columns: 1fr; }
       .gameTitle { font-size: clamp(20px, 5.8vw, 30px); }
+      .resultIllustWrap { width: 154px; height: 154px; }
     }
   </style>
 </head>
@@ -409,7 +445,13 @@
 
     <div class="centerOverlay hidden" id="gameOverOverlay">
       <div class="panel card">
-        <h2 class="title">フルーツ大収穫祭</h2>
+        <h2 class="title">リザルト</h2>
+        <div class="resultScore" id="resultScore">スコア 0</div>
+        <div class="resultRank" id="resultRank">見習い農家</div>
+        <div class="resultIllustWrap" id="resultIllustWrap" aria-label="ランクイラストをタップ">
+          <canvas id="resultCanvas" width="170" height="170" aria-label="ランクイラスト"></canvas>
+        </div>
+        <div class="resultHint">イラストをタップすると動くよ！</div>
         <button class="big" id="restartBtn">もう一度</button>
       </div>
     </div>
@@ -433,6 +475,11 @@
 
     const startOverlay = document.getElementById('startOverlay');
     const gameOverOverlay = document.getElementById('gameOverOverlay');
+    const resultScoreEl = document.getElementById('resultScore');
+    const resultRankEl = document.getElementById('resultRank');
+    const resultIllustWrap = document.getElementById('resultIllustWrap');
+    const resultCanvas = document.getElementById('resultCanvas');
+    const rctx = resultCanvas.getContext('2d');
 
     const startBtn = document.getElementById('startBtn');
     const restartBtn = document.getElementById('restartBtn');
@@ -463,6 +510,28 @@
     let bossActive = false;
     let nextBossAt = 7;
     let shakeTime = 0;
+
+    let resultAnim = {
+      rankIndex: 0,
+      bounce: 0,
+      spin: 0,
+      sparkle: 0,
+      pulse: 0,
+      lastTap: 0,
+    };
+
+    const ranks = [
+      { min: 0, name: '見習い農家', art: 'sprout', color: '#8fd96a' },
+      { min: 40, name: 'たねまき名人', art: 'seedbag', color: '#f2c96c' },
+      { min: 90, name: '畑のおともだち', art: 'chick', color: '#ffd86d' },
+      { min: 150, name: 'もぎたてハンター', art: 'basket', color: '#ffb36d' },
+      { min: 230, name: 'くだもの番長', art: 'applecat', color: '#ff8b8b' },
+      { min: 330, name: '森の収穫長', art: 'bear', color: '#c49bff' },
+      { min: 460, name: 'にこにこ果樹園主', art: 'tree', color: '#79d892' },
+      { min: 620, name: 'スイーツ収穫姫', art: 'cake', color: '#ff9ec3' },
+      { min: 820, name: 'レインボー農園王', art: 'crownfruit', color: '#8cc9ff' },
+      { min: 1100, name: 'フルーツキング', art: 'king', color: '#ffe17c' },
+    ];
 
     const config = {
       baseSpawnInterval: 1.05,
@@ -533,6 +602,18 @@
     function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
     function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
     function distanceSq(ax, ay, bx, by) { const dx = ax - bx; const dy = ay - by; return dx * dx + dy * dy; }
+
+    function getRankByScore(v) {
+      let current = ranks[0];
+      let idx = 0;
+      for (let i = 0; i < ranks.length; i++) {
+        if (v >= ranks[i].min) {
+          current = ranks[i];
+          idx = i;
+        }
+      }
+      return { ...current, index: idx };
+    }
 
     function updateHud() {
       scoreEl.textContent = score;
@@ -665,6 +746,7 @@
     const soundWrong = () => beep(240, 0.12, 'sawtooth', 0.03, 160);
     const soundBoss = () => { beep(330, 0.12, 'square', 0.03, 420); setTimeout(() => beep(520, 0.15, 'square', 0.03, 650), 80); };
     const soundSlice = () => beep(700, 0.05, 'triangle', 0.018, 980);
+    const soundResultTap = () => { beep(520, 0.06, 'triangle', 0.025, 680); setTimeout(() => beep(760, 0.08, 'triangle', 0.02, 960), 35); };
 
     function setMode(nextMode) {
       mode = nextMode;
@@ -841,12 +923,25 @@
       if (lives <= 0) endGame();
     }
 
+    function openResult() {
+      const rank = getRankByScore(score);
+      resultScoreEl.textContent = `スコア ${score}`;
+      resultRankEl.textContent = rank.name;
+      resultAnim.rankIndex = rank.index;
+      resultAnim.bounce = 0;
+      resultAnim.spin = 0;
+      resultAnim.sparkle = 0;
+      resultAnim.pulse = 0;
+      drawResultIllustration();
+      gameOverOverlay.classList.remove('hidden');
+    }
+
     function endGame() {
       gameState = 'over';
       stopBgm();
-      gameOverOverlay.classList.remove('hidden');
       pauseBtn.textContent = '一時停止';
       bossBannerEl.classList.remove('show');
+      openResult();
     }
 
     function resetGame() {
@@ -923,41 +1018,23 @@
       ctx.fillRect(0, 0, width, height);
 
       ctx.fillStyle = 'rgba(255,255,255,.45)';
-      ctx.beginPath();
-      ctx.arc(width * 0.18, 82, 34, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(width * 0.82, 110, 28, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.arc(width * 0.18, 82, 34, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(width * 0.82, 110, 28, 0, Math.PI * 2); ctx.fill();
 
       ctx.fillStyle = '#8cc47d';
-      ctx.beginPath();
-      ctx.ellipse(width * 0.5, height * 0.34, width * 0.62, 62, 0, 0, Math.PI * 2);
-      ctx.fill();
-
+      ctx.beginPath(); ctx.ellipse(width * 0.5, height * 0.34, width * 0.62, 62, 0, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = '#6fae67';
-      ctx.beginPath();
-      ctx.ellipse(width * 0.5, height * 0.45, width * 0.74, 86, 0, 0, Math.PI * 2);
-      ctx.fill();
-
+      ctx.beginPath(); ctx.ellipse(width * 0.5, height * 0.45, width * 0.74, 86, 0, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = '#4f8d50';
-      ctx.beginPath();
-      ctx.ellipse(width * 0.5, height * 0.60, width * 0.88, 120, 0, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.ellipse(width * 0.5, height * 0.60, width * 0.88, 120, 0, 0, Math.PI * 2); ctx.fill();
 
       function drawTree(x, y, scale) {
         ctx.fillStyle = '#7b5432';
         ctx.fillRect(x - 6 * scale, y, 12 * scale, 58 * scale);
         ctx.fillStyle = '#3f7f40';
-        ctx.beginPath();
-        ctx.arc(x, y, 28 * scale, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(x - 20 * scale, y + 10 * scale, 22 * scale, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(x + 20 * scale, y + 12 * scale, 22 * scale, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y, 28 * scale, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x - 20 * scale, y + 10 * scale, 22 * scale, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(x + 20 * scale, y + 12 * scale, 22 * scale, 0, Math.PI * 2); ctx.fill();
       }
 
       drawTree(width * 0.12, height * 0.54, 1.0);
@@ -1004,29 +1081,29 @@
       ctx.fillRect(0, y, width, h);
     }
 
-    function drawAppleLike(ctx, r, stretch = 1) {
-      ctx.beginPath();
-      ctx.moveTo(0, -r * 0.92);
-      ctx.bezierCurveTo(r * 0.78, -r * 1.2, r * 1.1, -r * 0.1, r * 0.62, r * 0.7 * stretch);
-      ctx.bezierCurveTo(r * 0.3, r * 1.06 * stretch, -r * 0.3, r * 1.06 * stretch, -r * 0.62, r * 0.7 * stretch);
-      ctx.bezierCurveTo(-r * 1.1, -r * 0.1, -r * 0.78, -r * 1.2, 0, -r * 0.92);
-      ctx.closePath();
+    function drawAppleLike(ctx2, r, stretch = 1) {
+      ctx2.beginPath();
+      ctx2.moveTo(0, -r * 0.92);
+      ctx2.bezierCurveTo(r * 0.78, -r * 1.2, r * 1.1, -r * 0.1, r * 0.62, r * 0.7 * stretch);
+      ctx2.bezierCurveTo(r * 0.3, r * 1.06 * stretch, -r * 0.3, r * 1.06 * stretch, -r * 0.62, r * 0.7 * stretch);
+      ctx2.bezierCurveTo(-r * 1.1, -r * 0.1, -r * 0.78, -r * 1.2, 0, -r * 0.92);
+      ctx2.closePath();
     }
-    function drawPear(ctx, r) {
-      ctx.beginPath();
-      ctx.moveTo(0, -r * 0.92);
-      ctx.bezierCurveTo(r * 0.68, -r * 0.92, r * 0.52, -r * 0.12, r * 0.76, r * 0.42);
-      ctx.bezierCurveTo(r * 0.92, r * 0.98, r * 0.3, r * 1.12, 0, r * 1.08);
-      ctx.bezierCurveTo(-r * 0.3, r * 1.12, -r * 0.92, r * 0.98, -r * 0.76, r * 0.42);
-      ctx.bezierCurveTo(-r * 0.52, -r * 0.12, -r * 0.68, -r * 0.92, 0, -r * 0.92);
-      ctx.closePath();
+    function drawPear(ctx2, r) {
+      ctx2.beginPath();
+      ctx2.moveTo(0, -r * 0.92);
+      ctx2.bezierCurveTo(r * 0.68, -r * 0.92, r * 0.52, -r * 0.12, r * 0.76, r * 0.42);
+      ctx2.bezierCurveTo(r * 0.92, r * 0.98, r * 0.3, r * 1.12, 0, r * 1.08);
+      ctx2.bezierCurveTo(-r * 0.3, r * 1.12, -r * 0.92, r * 0.98, -r * 0.76, r * 0.42);
+      ctx2.bezierCurveTo(-r * 0.52, -r * 0.12, -r * 0.68, -r * 0.92, 0, -r * 0.92);
+      ctx2.closePath();
     }
-    function drawLemon(ctx, r) {
-      ctx.beginPath();
-      ctx.moveTo(0, -r * 0.92);
-      ctx.bezierCurveTo(r * 1.02, -r * 0.72, r * 1.02, r * 0.72, 0, r * 0.92);
-      ctx.bezierCurveTo(-r * 1.02, r * 0.72, -r * 1.02, -r * 0.72, 0, -r * 0.92);
-      ctx.closePath();
+    function drawLemon(ctx2, r) {
+      ctx2.beginPath();
+      ctx2.moveTo(0, -r * 0.92);
+      ctx2.bezierCurveTo(r * 1.02, -r * 0.72, r * 1.02, r * 0.72, 0, r * 0.92);
+      ctx2.bezierCurveTo(-r * 1.02, r * 0.72, -r * 1.02, -r * 0.72, 0, -r * 0.92);
+      ctx2.closePath();
     }
     function traceFruitShape(item) {
       const { type } = item.theme;
@@ -1083,7 +1160,7 @@
       ctx.textBaseline = 'middle';
       ctx.lineWidth = Math.max(3, r * 0.09);
       ctx.strokeStyle = 'rgba(0,0,0,.22)';
-      ctx.font = `900 ${Math.max(21, r * 0.86)}px 'Kiwi Maru', sans-serif`;
+      ctx.font = `900 ${Math.max(21, r * 0.86)}px 'Yomogi', sans-serif`;
       ctx.strokeText(String(item.value), 0, r * 0.05);
       ctx.fillText(String(item.value), 0, r * 0.05);
       ctx.restore();
@@ -1140,7 +1217,7 @@
       ctx.fillRect(0, 0, width, height);
       ctx.fillStyle = '#fff';
       ctx.textAlign = 'center';
-      ctx.font = '700 30px Kiwi Maru, sans-serif';
+      ctx.font = '700 30px Yomogi, sans-serif';
       ctx.fillText('PAUSED', width / 2, height / 2);
       ctx.restore();
     }
@@ -1152,6 +1229,197 @@
       ctx.lineWidth = 5;
       ctx.strokeRect(3, playableTop - 6, width - 6, playableBottom - playableTop + 12);
       ctx.restore();
+    }
+
+    function drawResultIllustration() {
+      const rank = ranks[resultAnim.rankIndex];
+      const w = resultCanvas.width;
+      const h = resultCanvas.height;
+      rctx.clearRect(0, 0, w, h);
+
+      const bg = rctx.createLinearGradient(0, 0, 0, h);
+      bg.addColorStop(0, '#fff8ef');
+      bg.addColorStop(1, '#e9fff0');
+      rctx.fillStyle = bg;
+      rctx.fillRect(0, 0, w, h);
+
+      rctx.save();
+      rctx.translate(w / 2, h / 2 + Math.sin(resultAnim.pulse) * 3 - resultAnim.bounce * 12);
+      rctx.rotate(resultAnim.spin);
+
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI * 2 / 6) * i + resultAnim.sparkle;
+        const sx = Math.cos(angle) * 56;
+        const sy = Math.sin(angle) * 56;
+        rctx.fillStyle = 'rgba(255,220,120,.85)';
+        rctx.beginPath();
+        rctx.arc(sx, sy, 4 + Math.sin(resultAnim.sparkle + i) * 1.2, 0, Math.PI * 2);
+        rctx.fill();
+      }
+
+      switch (rank.art) {
+        case 'sprout': drawSprout(); break;
+        case 'seedbag': drawSeedBag(); break;
+        case 'chick': drawChick(); break;
+        case 'basket': drawBasket(); break;
+        case 'applecat': drawAppleCat(); break;
+        case 'bear': drawBear(); break;
+        case 'tree': drawTreeSpirit(); break;
+        case 'cake': drawCake(); break;
+        case 'crownfruit': drawCrownFruit(); break;
+        case 'king': drawKing(); break;
+      }
+
+      rctx.restore();
+
+      function drawEyes(y = -4, spread = 14) {
+        rctx.fillStyle = '#3a2a2a';
+        rctx.beginPath(); rctx.arc(-spread, y, 3, 0, Math.PI * 2); rctx.fill();
+        rctx.beginPath(); rctx.arc(spread, y, 3, 0, Math.PI * 2); rctx.fill();
+        rctx.strokeStyle = '#3a2a2a';
+        rctx.lineWidth = 2;
+        rctx.beginPath(); rctx.arc(0, y + 6, 7, 0.15, Math.PI - 0.15); rctx.stroke();
+      }
+
+      function drawSprout() {
+        rctx.fillStyle = '#8b5b3b';
+        rctx.beginPath(); rctx.ellipse(0, 28, 34, 22, 0, 0, Math.PI * 2); rctx.fill();
+        rctx.fillStyle = '#6abf66';
+        rctx.fillRect(-4, -4, 8, 36);
+        rctx.beginPath(); rctx.ellipse(-16, -10, 18, 11, -0.55, 0, Math.PI * 2); rctx.fill();
+        rctx.beginPath(); rctx.ellipse(16, -12, 18, 11, 0.55, 0, Math.PI * 2); rctx.fill();
+        drawEyes(10, 10);
+      }
+
+      function drawSeedBag() {
+        rctx.fillStyle = '#d9b06d';
+        rctx.beginPath(); rctx.roundRect(-34, -34, 68, 82, 16); rctx.fill();
+        rctx.fillStyle = '#af8551';
+        rctx.fillRect(-28, -24, 56, 10);
+        rctx.fillStyle = '#6abf66';
+        rctx.beginPath(); rctx.ellipse(0, 2, 18, 12, 0, 0, Math.PI * 2); rctx.fill();
+        drawEyes(18, 12);
+      }
+
+      function drawChick() {
+        rctx.fillStyle = '#ffe16d';
+        rctx.beginPath(); rctx.arc(0, 8, 34, 0, Math.PI * 2); rctx.fill();
+        rctx.fillStyle = '#ffb14c';
+        rctx.beginPath(); rctx.moveTo(0, 8); rctx.lineTo(-10, 18); rctx.lineTo(10, 18); rctx.closePath(); rctx.fill();
+        rctx.fillStyle = '#fff';
+        rctx.beginPath(); rctx.arc(-12, -4, 6, 0, Math.PI * 2); rctx.fill();
+        rctx.beginPath(); rctx.arc(12, -4, 6, 0, Math.PI * 2); rctx.fill();
+        rctx.fillStyle = '#2f1b1b';
+        rctx.beginPath(); rctx.arc(-12, -4, 2.5, 0, Math.PI * 2); rctx.fill();
+        rctx.beginPath(); rctx.arc(12, -4, 2.5, 0, Math.PI * 2); rctx.fill();
+      }
+
+      function drawBasket() {
+        rctx.fillStyle = '#b8763d';
+        rctx.beginPath(); rctx.roundRect(-38, -4, 76, 50, 16); rctx.fill();
+        rctx.strokeStyle = '#8d5528';
+        rctx.lineWidth = 6;
+        rctx.beginPath(); rctx.arc(0, -2, 28, Math.PI, 0); rctx.stroke();
+        drawSmallFruit(-16, -10, '#ff7b7b');
+        drawSmallFruit(0, -18, '#ffd55e');
+        drawSmallFruit(16, -10, '#7bcf67');
+      }
+
+      function drawAppleCat() {
+        rctx.fillStyle = '#ff7a83';
+        rctx.beginPath(); rctx.arc(0, 10, 34, 0, Math.PI * 2); rctx.fill();
+        rctx.beginPath(); rctx.moveTo(-20, -14); rctx.lineTo(-6, -42); rctx.lineTo(0, -14); rctx.closePath(); rctx.fill();
+        rctx.beginPath(); rctx.moveTo(20, -14); rctx.lineTo(6, -42); rctx.lineTo(0, -14); rctx.closePath(); rctx.fill();
+        drawEyes(6, 12);
+        rctx.strokeStyle = '#fff'; rctx.lineWidth = 2;
+        rctx.beginPath(); rctx.moveTo(-28, 10); rctx.lineTo(-44, 6); rctx.stroke();
+        rctx.beginPath(); rctx.moveTo(-28, 16); rctx.lineTo(-44, 18); rctx.stroke();
+        rctx.beginPath(); rctx.moveTo(28, 10); rctx.lineTo(44, 6); rctx.stroke();
+        rctx.beginPath(); rctx.moveTo(28, 16); rctx.lineTo(44, 18); rctx.stroke();
+        rctx.fillStyle = '#58b95b';
+        rctx.beginPath(); rctx.ellipse(12, -32, 10, 7, 0.4, 0, Math.PI * 2); rctx.fill();
+      }
+
+      function drawBear() {
+        rctx.fillStyle = '#b98a61';
+        rctx.beginPath(); rctx.arc(0, 8, 34, 0, Math.PI * 2); rctx.fill();
+        rctx.beginPath(); rctx.arc(-24, -18, 12, 0, Math.PI * 2); rctx.fill();
+        rctx.beginPath(); rctx.arc(24, -18, 12, 0, Math.PI * 2); rctx.fill();
+        rctx.fillStyle = '#efd0b8';
+        rctx.beginPath(); rctx.ellipse(0, 18, 20, 14, 0, 0, Math.PI * 2); rctx.fill();
+        drawEyes(2, 12);
+      }
+
+      function drawTreeSpirit() {
+        rctx.fillStyle = '#6f4c2d';
+        rctx.fillRect(-12, 6, 24, 58);
+        rctx.fillStyle = '#59a95a';
+        rctx.beginPath(); rctx.arc(0, -4, 34, 0, Math.PI * 2); rctx.fill();
+        rctx.beginPath(); rctx.arc(-22, 10, 26, 0, Math.PI * 2); rctx.fill();
+        rctx.beginPath(); rctx.arc(22, 10, 26, 0, Math.PI * 2); rctx.fill();
+        drawEyes(4, 12);
+      }
+
+      function drawCake() {
+        rctx.fillStyle = '#ffe0ef';
+        rctx.beginPath(); rctx.roundRect(-34, -6, 68, 54, 12); rctx.fill();
+        rctx.fillStyle = '#ff9fc1';
+        rctx.fillRect(-34, -6, 68, 18);
+        rctx.fillStyle = '#fff3b2';
+        rctx.fillRect(-34, 12, 68, 16);
+        rctx.fillStyle = '#ff7fa4';
+        rctx.beginPath(); rctx.arc(0, -18, 12, 0, Math.PI * 2); rctx.fill();
+        drawEyes(20, 12);
+      }
+
+      function drawCrownFruit() {
+        rctx.fillStyle = '#8bc6ff';
+        rctx.beginPath(); rctx.arc(0, 10, 34, 0, Math.PI * 2); rctx.fill();
+        drawEyes(6, 12);
+        rctx.fillStyle = '#ffd85f';
+        rctx.beginPath();
+        rctx.moveTo(-24, -20); rctx.lineTo(-12, -42); rctx.lineTo(0, -22); rctx.lineTo(12, -42); rctx.lineTo(24, -20); rctx.closePath();
+        rctx.fill();
+        drawSmallFruit(-10, -3, '#ff8b8b', 6);
+        drawSmallFruit(10, 2, '#8ce078', 6);
+      }
+
+      function drawKing() {
+        rctx.fillStyle = '#ffd86c';
+        rctx.beginPath(); rctx.arc(0, 12, 36, 0, Math.PI * 2); rctx.fill();
+        drawEyes(6, 13);
+        rctx.fillStyle = '#fff';
+        rctx.beginPath(); rctx.arc(-12, -2, 5, 0, Math.PI * 2); rctx.fill();
+        rctx.beginPath(); rctx.arc(12, -2, 5, 0, Math.PI * 2); rctx.fill();
+        rctx.fillStyle = '#ffd45c';
+        rctx.beginPath();
+        rctx.moveTo(-28, -24); rctx.lineTo(-18, -48); rctx.lineTo(-4, -26); rctx.lineTo(0, -50); rctx.lineTo(8, -26); rctx.lineTo(22, -48); rctx.lineTo(30, -24); rctx.closePath();
+        rctx.fill();
+        rctx.fillStyle = '#ff8b8b';
+        rctx.beginPath(); rctx.arc(0, -34, 5, 0, Math.PI * 2); rctx.fill();
+      }
+
+      function drawSmallFruit(x, y, color, r = 8) {
+        rctx.fillStyle = color;
+        rctx.beginPath(); rctx.arc(x, y, r, 0, Math.PI * 2); rctx.fill();
+      }
+    }
+
+    function updateResultAnimation(dt) {
+      if (gameOverOverlay.classList.contains('hidden')) return;
+      resultAnim.pulse += dt * 4;
+      resultAnim.sparkle += dt * 2.2;
+      resultAnim.bounce = Math.max(0, resultAnim.bounce - dt * 2.6);
+      resultAnim.spin *= 0.92;
+      drawResultIllustration();
+    }
+
+    function triggerResultAction() {
+      resultAnim.bounce = 1;
+      resultAnim.spin += 0.18;
+      resultAnim.sparkle += 0.8;
+      soundResultTap();
+      drawResultIllustration();
     }
 
     function draw() {
@@ -1194,6 +1462,9 @@
     }
 
     canvas.addEventListener('pointerdown', handlePointer, { passive: true });
+    resultIllustWrap.addEventListener('pointerdown', () => {
+      if (!gameOverOverlay.classList.contains('hidden')) triggerResultAction();
+    });
     startBtn.addEventListener('click', resetGame);
     restartBtn.addEventListener('click', resetGame);
     pauseBtn.addEventListener('click', () => { if (gameState !== 'ready' && gameState !== 'over') togglePause(); });
@@ -1207,12 +1478,14 @@
     updateHud();
     setMode('endless');
     generateQuestion(false);
+    drawResultIllustration();
     requestAnimationFrame((ts) => {
       lastTs = ts;
       requestAnimationFrame(function loop(ts2) {
         const dt = clamp((ts2 - lastTs) / 1000, 0, 0.033);
         lastTs = ts2;
         if (gameState === 'running') update(dt);
+        updateResultAnimation(dt);
         draw();
         requestAnimationFrame(loop);
       });
