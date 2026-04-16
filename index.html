@@ -54,7 +54,7 @@
       --safe-top: max(10px, env(safe-area-inset-top));
     }
 
-    canvas {
+    #gameCanvas {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -376,6 +376,8 @@
     }
 
     #resultCanvas {
+      position: static;
+      inset: auto;
       width: 100%;
       height: 100%;
       display: block;
