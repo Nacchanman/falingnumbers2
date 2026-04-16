@@ -1092,16 +1092,6 @@
       ctx.save();
       ctx.translate(item.x, item.y);
       ctx.rotate(item.rotation);
-      if (item.big && currentQuestion && currentQuestion.boss) {
-        ctx.save();
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = 'rgba(255,217,105,.4)';
-        ctx.beginPath();
-        ctx.arc(0, 0, item.r * 1.08, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255,217,105,.12)';
-        ctx.fill();
-        ctx.restore();
-      }
       drawFruitCore(item, 1);
       ctx.restore();
     }
